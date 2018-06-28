@@ -6,4 +6,6 @@ import com.suncorp.banking.application.vo.AccountVo;
 
 @Repository
 public interface AccountRepository extends JpaRepository<AccountVo, Long> {
+	
+	AccountVo findAccountByAccountNumber(String accountNumber);
 }
