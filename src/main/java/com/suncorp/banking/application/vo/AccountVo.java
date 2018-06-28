@@ -1,6 +1,8 @@
 package com.suncorp.banking.application.vo;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,11 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -27,6 +31,7 @@ public class AccountVo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "account_id")
+	@JsonIgnore
 	private long id;
 
 	@Column(name = "first_name")
@@ -49,12 +54,18 @@ public class AccountVo {
 	@UpdateTimestamp
 	private Date updatedDate;
 
-	@Column(name = "account_number")
+	@Column(name = "account_number", unique = true)
 	private String accountNumber;
 
 	@Column(name = "account_type")
 	private String accounttype;
 
+	@Column(name = "acccount_balance", columnDefinition="Decimal(15,2) default 0")
+	private double balance;
+
+	@Transient
+	List<AccountTransactionVO> accountTran = new ArrayList<AccountTransactionVO>();
+	
 	public long getId() {
 		return id;
 	}
@@ -119,11 +130,29 @@ public class AccountVo {
 		this.accounttype = accounttype;
 	}
 
+	public double getBalance() {
+		return balance;
+	}
+
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
+
+	
+	
+	public List<AccountTransactionVO> getAccountTran() {
+		return accountTran;
+	}
+
+	public void setAccountTran(List<AccountTransactionVO> accountTran) {
+		this.accountTran = accountTran;
+	}
+
 	@Override
 	public String toString() {
-		return "AccountVo [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", dob=" + dob
+		return "AccountVo [firstname=" + firstname + ", lastname=" + lastname + ", dob=" + dob
 				+ ", createdDate=" + createdDate + ", updatedDate=" + updatedDate + ", accountNumber=" + accountNumber
-				+ ", accounttype=" + accounttype + "]";
+				+ ", accounttype=" + accounttype + ", balance=" + balance + "]";
 	}
 
 }
